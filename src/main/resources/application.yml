@@ -1,0 +1,21 @@
+spring:
+# Database
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ec2-54-75-239-237.eu-west-1.compute.amazonaws.com:5432/dd6koiu799t9ch?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+    userName: ujroedsdysmeqz
+    password: b9b53fc906ffaf593c5d23a41d47bf915a67a0c3c657d6127dbdbd80c34057bd
+    tomcat:
+      max-active: 5
+
+# JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
