@@ -4,9 +4,11 @@ import lnu.asd.messanger.web.entity.register.RegistrationError;
 
 public class ErrorUtil {
 
-    public static RegistrationError getConflictError() {
+    private static String FORMAT = "%s\n%s";
+
+    public static RegistrationError getConflictError(String message) {
         RegistrationError error = new RegistrationError();
-        error.setError(ErrorText.Registration.CONFLICT);
+        error.setError(String.format(FORMAT, ErrorText.Registration.CONFLICT, message));
         return error;
     }
 }

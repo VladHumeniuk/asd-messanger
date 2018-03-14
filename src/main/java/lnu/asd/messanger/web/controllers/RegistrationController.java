@@ -4,8 +4,8 @@ import lnu.asd.messanger.domain.User;
 import lnu.asd.messanger.repository.UserRepository;
 import lnu.asd.messanger.web.entity.register.request.RegisterRequest;
 import lnu.asd.messanger.web.entity.register.response.RegisterResponse;
+import lnu.asd.messanger.web.exceptions.AlreadyRegisteredException;
 import lnu.asd.messanger.web.mapper.RegistrationResponseMapper;
-import lnu.asd.messanger.web.utils.ErrorUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +37,13 @@ public class RegistrationController {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request)
+            throws AlreadyRegisteredException {
 
         User user = userRepository.findUserByUserName(request.getName());
 
         if (user != null) {
-            new ResponseEntity<>(ErrorUtil.getConflictError(), HttpStatus.CONFLICT);
+            throw new AlreadyRegisteredException(request.getName());
         }
 
         user = new User();
