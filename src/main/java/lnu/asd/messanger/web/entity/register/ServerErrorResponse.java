@@ -1,6 +1,6 @@
 package lnu.asd.messanger.web.entity.register;
 
-public class RegistrationError {
+public class ServerErrorResponse {
 
     private String error;
 
