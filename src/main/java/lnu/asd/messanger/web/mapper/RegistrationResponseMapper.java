@@ -1,6 +1,6 @@
 package lnu.asd.messanger.web.mapper;
 
-import lnu.asd.messanger.domain.User;
+import lnu.asd.messanger.domain.dbentity.User;
 import lnu.asd.messanger.web.entity.register.response.Attributes;
 import lnu.asd.messanger.web.entity.register.response.Data;
 import lnu.asd.messanger.web.entity.register.response.RegisterResponse;

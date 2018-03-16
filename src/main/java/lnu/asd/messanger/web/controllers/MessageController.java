@@ -1,7 +1,7 @@
 package lnu.asd.messanger.web.controllers;
 
 import lnu.asd.messanger.domain.PrivateChatMessage;
-import lnu.asd.messanger.domain.User;
+import lnu.asd.messanger.domain.dbentity.User;
 import lnu.asd.messanger.repository.UserRepository;
 import lnu.asd.messanger.web.entity.message.request.SendMessageRequest;
 import lnu.asd.messanger.web.exceptions.UserNotFoundException;
@@ -38,16 +38,23 @@ public class MessageController {
     public ResponseEntity sendPrivateMessage(@RequestHeader(name = "senderId") Long senderId,
                                              @RequestBody SendMessageRequest request,
                                              @PathVariable(name = "userId") Long userId) throws UserNotFoundException {
-        User sender = userRepository.findOne(senderId);
-        User recipient = userRepository.findOne(userId);
+//        User sender = userRepository.findOne(senderId);
+//        User recipient = userRepository.findOne(userId);
+//
+//        if (sender == null) {
+//            throw new UserNotFoundException(senderId);
+//        }
+//        if (recipient == null) {
+//            throw new UserNotFoundException(userId);
+//        }
 
-        if (sender == null) {
-            throw new UserNotFoundException(senderId);
-        }
-        if (recipient == null) {
-            throw new UserNotFoundException(userId);
-        }
+        User sender = new User();
+        sender.setId(senderId);
+        sender.setUserName("senderName");
 
+        User recipient = new User();
+        recipient.setId(userId);
+        recipient.setUserName("recipientName");
         PrivateChatMessage message = new PrivateChatMessage();
         message.setSender(sender);
         message.setRecipient(recipient);
@@ -64,8 +71,15 @@ public class MessageController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity sendGroupMessage(@RequestHeader(value = "senderId") Long userId,
-                                             @RequestBody SendMessageRequest request) {
+    public ResponseEntity sendGroupMessage(@RequestHeader(value = "senderId") Long senderId,
+                                           @RequestBody SendMessageRequest request,
+                                           @PathVariable(name = "groupId") Long groupId) throws UserNotFoundException {
+
+        User sender = userRepository.findOne(senderId);
+
+        if (sender == null) {
+            throw new UserNotFoundException(senderId);
+        }
         //TODO
         return new ResponseEntity(HttpStatus.OK);
     }

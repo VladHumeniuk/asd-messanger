@@ -1,4 +1,4 @@
-package lnu.asd.messanger.web.socket;
+package lnu.asd.messanger.web.entity.socket;
 
 public class LoginEntity {
 

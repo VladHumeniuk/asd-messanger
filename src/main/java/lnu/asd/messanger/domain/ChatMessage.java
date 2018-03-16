@@ -1,5 +1,7 @@
 package lnu.asd.messanger.domain;
 
+import lnu.asd.messanger.domain.dbentity.User;
+
 public class ChatMessage {
 
     private User sender;

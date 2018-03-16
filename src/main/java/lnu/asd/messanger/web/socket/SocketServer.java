@@ -2,11 +2,11 @@ package lnu.asd.messanger.web.socket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lnu.asd.messanger.domain.GroupChatMessage;
 import lnu.asd.messanger.domain.PrivateChatMessage;
-import lnu.asd.messanger.domain.User;
 import lnu.asd.messanger.repository.UserRepository;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
+import lnu.asd.messanger.web.entity.socket.LoginEntity;
+import lnu.asd.messanger.web.mapper.PrivateMessageMapper;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -31,6 +31,13 @@ public class SocketServer {
 
     private UserRepository userRepository;
 
+    private PrivateMessageMapper privateMessageMapper;
+
+    @Inject
+    public void setPrivateMessageMapper(PrivateMessageMapper privateMessageMapper) {
+        this.privateMessageMapper = privateMessageMapper;
+    }
+
     @Inject
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -49,27 +56,32 @@ public class SocketServer {
                 con.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } finally {
             closeAll();
         }
     }
 
     public void sendMessage(PrivateChatMessage message) throws JsonProcessingException {
+        String messageJson = objectMapper.writeValueAsString(privateMessageMapper.map(message));
+        System.out.println("MYTAG | " + messageJson);
         synchronized(connections) {
-            Iterator<Connection> iter = connections.iterator();
-            while(iter.hasNext()) {
-                Connection connection = iter.next();
+            for (Connection connection : connections) {
                 if (message.getRecipient().getId().equals(connection.getUserId())) {
-                    connection.out.println(objectMapper.writeValueAsString(message));
+                    connection.out.println(messageJson);
                 }
             }
         }
     }
 
+    public void sendMessage(GroupChatMessage message) {
+        //TODO
+    }
+
     private boolean login(LoginEntity loginEntity) {
-        User user = userRepository.findOne(loginEntity.getUserId());
-        return user != null && user.getUserName().equals(loginEntity.getUserName());
+//        User user = userRepository.findOne(loginEntity.getUserId());
+//        return user != null && user.getUserName().equals(loginEntity.getUserName());
+        return true;
     }
 
     private void closeAll() {
@@ -77,9 +89,8 @@ public class SocketServer {
             server.close();
 
             synchronized(connections) {
-                Iterator<Connection> iter = connections.iterator();
-                while(iter.hasNext()) {
-                    ((Connection) iter.next()).close();
+                for (Connection connection : connections) {
+                    (connection).close();
                 }
             }
         } catch (Exception e) {
@@ -104,7 +115,7 @@ public class SocketServer {
                 out = new PrintWriter(socket.getOutputStream(), true);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
                 close();
             }
         }
@@ -113,6 +124,7 @@ public class SocketServer {
         public void run() {
             try {
                 String loginEntityString = in.readLine();
+                System.out.println("MYTAG | " + loginEntityString);
                 boolean login = true;
                 try {
                     LoginEntity loginEntity = objectMapper.readValue(loginEntityString, LoginEntity.class);
@@ -120,7 +132,7 @@ public class SocketServer {
                     userName = loginEntity.getUserName();
                     userId = loginEntity.getUserId();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                     login = false;
                 }
                 if (!login) {
@@ -130,9 +142,7 @@ public class SocketServer {
                     out.println("ok");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                close();
+                System.out.println(e.getMessage());
             }
         }
 

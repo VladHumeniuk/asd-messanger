@@ -1,4 +1,4 @@
-package lnu.asd.messanger.domain;
+package lnu.asd.messanger.domain.dbentity;
 
 import javax.persistence.*;
 import java.util.List;

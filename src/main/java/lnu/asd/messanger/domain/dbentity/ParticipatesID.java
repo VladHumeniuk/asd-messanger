@@ -1,9 +1,11 @@
-package lnu.asd.messanger.domain;
+package lnu.asd.messanger.domain.dbentity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Embeddable
-public class ParticipatesID {
+public class ParticipatesID implements Serializable {
+
     @ManyToOne
     @JoinColumn(name="enduser_id", referencedColumnName = "enduser_id", nullable = false)
     private User user;

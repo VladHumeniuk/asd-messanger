@@ -1,6 +1,6 @@
 package lnu.asd.messanger.web.controllers;
 
-import lnu.asd.messanger.domain.User;
+import lnu.asd.messanger.domain.dbentity.User;
 import lnu.asd.messanger.repository.UserRepository;
 import lnu.asd.messanger.web.entity.register.request.RegisterRequest;
 import lnu.asd.messanger.web.entity.register.response.RegisterResponse;
