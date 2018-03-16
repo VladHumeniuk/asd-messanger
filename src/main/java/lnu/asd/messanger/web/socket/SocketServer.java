@@ -45,9 +45,7 @@ public class SocketServer {
 
     public void start() {
         try {
-            server = new ServerSocket(Integer.parseInt(System.getenv("PORT")));
-            System.out.println("address | " + server.getInetAddress());
-            System.out.println("port | " + server.getLocalPort());
+            server = new ServerSocket(8283);
 
             while (true) {
                 Socket socket = server.accept();
