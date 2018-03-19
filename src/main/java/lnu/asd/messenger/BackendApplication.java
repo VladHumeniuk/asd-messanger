@@ -14,7 +14,7 @@ public class BackendApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(BackendApplication.class, args);
 
-        context.getBean(SocketServer.class).start();
+        //context.getBean(SocketServer.class).start();
     }
 
 }
