@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lnu.asd.messenger.domain.GroupChatMessage;
 import lnu.asd.messenger.domain.PrivateChatMessage;
+import lnu.asd.messenger.domain.dbentity.Participates;
 import lnu.asd.messenger.domain.dbentity.User;
+import lnu.asd.messenger.repository.ParticipatesRepository;
 import lnu.asd.messenger.repository.UserRepository;
 import lnu.asd.messenger.web.entity.socket.LoginEntity;
+import lnu.asd.messenger.web.mapper.GroupMessageMapper;
 import lnu.asd.messenger.web.mapper.PrivateMessageMapper;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +35,11 @@ public class SocketServer {
 
     private UserRepository userRepository;
 
+    private ParticipatesRepository participatesRepository;
+
     private PrivateMessageMapper privateMessageMapper;
+
+    private GroupMessageMapper groupMessageMapper;
 
     @Inject
     public void setPrivateMessageMapper(PrivateMessageMapper privateMessageMapper) {
@@ -40,8 +47,18 @@ public class SocketServer {
     }
 
     @Inject
+    public void setGroupMessageMapper(GroupMessageMapper groupMessageMapper) {
+        this.groupMessageMapper = groupMessageMapper;
+    }
+
+    @Inject
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Inject
+    public void setParticipatesRepository(ParticipatesRepository participatesRepository) {
+        this.participatesRepository = participatesRepository;
     }
 
     public void start() {
@@ -74,8 +91,22 @@ public class SocketServer {
         }
     }
 
-    public void sendMessage(GroupChatMessage message) {
-        //TODO
+    public void sendMessage(GroupChatMessage message) throws JsonProcessingException {
+        List<Participates> participates = participatesRepository.findById_Group(message.getGroup());
+        Set<Long> recipientIds = new HashSet<>();
+
+        for (Participates participate : participates) {
+            recipientIds.add(participate.getId().getUser().getId());
+        }
+
+        String messageJson = objectMapper.writeValueAsString(groupMessageMapper.map(message));
+        synchronized(connections) {
+            for (Connection connection : connections) {
+                if (recipientIds.contains(connection.getUserId())) {
+                    connection.out.println(messageJson);
+                }
+            }
+        }
     }
 
     private boolean login(LoginEntity loginEntity) {

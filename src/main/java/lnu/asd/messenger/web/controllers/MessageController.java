@@ -1,7 +1,10 @@
 package lnu.asd.messenger.web.controllers;
 
+import lnu.asd.messenger.domain.GroupChatMessage;
 import lnu.asd.messenger.domain.PrivateChatMessage;
+import lnu.asd.messenger.domain.dbentity.Group;
 import lnu.asd.messenger.domain.dbentity.User;
+import lnu.asd.messenger.repository.GroupRepository;
 import lnu.asd.messenger.repository.UserRepository;
 import lnu.asd.messenger.web.entity.message.request.SendMessageRequest;
 import lnu.asd.messenger.web.exceptions.UserNotFoundException;
@@ -21,6 +24,8 @@ public class MessageController {
 
     private UserRepository userRepository;
 
+    private GroupRepository groupRepository;
+
     @Inject
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -29,6 +34,11 @@ public class MessageController {
     @Inject
     public void setSocketServer(SocketServer socketServer) {
         this.socketServer = socketServer;
+    }
+
+    @Inject
+    public void setGroupRepository(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
     }
 
     @RequestMapping(value = "/private/{userId}",
@@ -70,10 +80,21 @@ public class MessageController {
 
         User sender = userRepository.findOne(senderId);
 
-        if (sender == null) {
+        Group group = groupRepository.findOne(groupId);
+
+        if (sender == null || group == null) {
             throw new UserNotFoundException(senderId);
         }
-        //TODO
-        return new ResponseEntity(HttpStatus.OK);
+
+        GroupChatMessage message = new GroupChatMessage();
+        message.setGroup(group);
+        message.setSender(sender);
+        message.setText(request.getMessage());
+        try {
+            socketServer.sendMessage(message);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            throw new InternalError(e.getMessage());
+        }
     }
 }
