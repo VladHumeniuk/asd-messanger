@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 
-@RestController("/api/login")
+@RestController
+@RequestMapping("/api/login")
 public class LoginController {
 
     private UserRepository userRepository;
