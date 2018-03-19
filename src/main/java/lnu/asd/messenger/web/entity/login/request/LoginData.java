@@ -1,6 +1,6 @@
 package lnu.asd.messenger.web.entity.login.request;
 
-public class Data {
+public class LoginData {
 
     private String userName;
 

@@ -2,13 +2,13 @@ package lnu.asd.messenger.web.entity.login.request;
 
 public class LoginRequest {
 
-    private Data data;
+    private LoginData data;
 
-    public Data getData() {
+    public LoginData getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(LoginData data) {
         this.data = data;
     }
 }

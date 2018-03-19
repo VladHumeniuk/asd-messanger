@@ -2,7 +2,7 @@ package lnu.asd.messenger.web.controllers;
 
 import lnu.asd.messenger.domain.dbentity.User;
 import lnu.asd.messenger.repository.UserRepository;
-import lnu.asd.messenger.web.entity.login.request.Data;
+import lnu.asd.messenger.web.entity.login.request.LoginData;
 import lnu.asd.messenger.web.entity.login.request.LoginRequest;
 import lnu.asd.messenger.web.entity.register.response.UserInfoResponse;
 import lnu.asd.messenger.web.exceptions.LoginException;
@@ -40,7 +40,7 @@ public class LoginController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserInfoResponse> loginUser(@RequestBody LoginRequest request) throws LoginException {
 
-        Data loginData = request.getData();
+        LoginData loginData = request.getData();
         User user = userRepository.findUserByUserName(loginData.getUserName());
 
         if (user == null || !user.getPassword().equals(loginData.getPassword())) {

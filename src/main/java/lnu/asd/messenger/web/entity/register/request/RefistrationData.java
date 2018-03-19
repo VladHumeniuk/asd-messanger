@@ -1,6 +1,6 @@
 package lnu.asd.messenger.web.entity.register.request;
 
-public class Data {
+public class RefistrationData {
 
     private String name;
 
