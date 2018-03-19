@@ -10,6 +10,8 @@ public class Participates {
     @EmbeddedId
     private ParticipatesID id;
 
+    private Boolean isCreator;
+
     public ParticipatesID getId() {
         return id;
     }
@@ -18,4 +20,11 @@ public class Participates {
         this.id = id;
     }
 
+    public Boolean getCreator() {
+        return isCreator;
+    }
+
+    public void setCreator(Boolean creator) {
+        isCreator = creator;
+    }
 }
